@@ -8,12 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class CampaignRepository {
 
     private final List<Campaign> campaigns = new ArrayList<>();
     private final List<Expense> expenses = new ArrayList<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
+    private final Map<Long, Campaign> storage = new ConcurrentHashMap<>();
     private long nextExpenseId = 11;
 
     public CampaignRepository() {
@@ -64,5 +69,24 @@ public class CampaignRepository {
         expense.setId(nextExpenseId++);
         expenses.add(expense);
         return expense;
+    }
+
+    public Campaign save(Campaign campaign) {
+        Long id = (campaign.getId() != null) ? campaign.getId() : idGenerator.getAndIncrement();
+        
+        Campaign saved = new Campaign(
+            id,
+            campaign.getName(),
+            campaign.getClient(),
+            campaign.getType(),
+            campaign.getStatus(),
+            campaign.getBudget(),
+            campaign.getSpent(),
+            campaign.getCurrency(),
+            campaign.getStartDate(),
+            campaign.getEndDate()
+        );
+        storage.put(id, saved);
+        return saved;
     }
 }
