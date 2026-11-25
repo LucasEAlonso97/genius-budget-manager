@@ -117,6 +117,12 @@ budget-manager/
 │   ├── model/          Entidades y DTOs
 │   ├── repository/     Datos en memoria
 │   └── exception/      Manejo global de errores
+├── bruno/              Colección Bruno (API REST)
+│   ├── opencollection.yml
+│   ├── campaigns/       Requests de campañas
+│   ├── leads/           Requests de leads
+│   ├── reporting/       Requests de reportería
+│   └── environments/    Variables de entorno (LOCAL)
 ├── reporting/
 │   ├── extract.py      Script Python: extrae datos de las APIs y genera report.xlsx
 │   └── requirements.txt  Dependencias Python (openpyxl, requests)
