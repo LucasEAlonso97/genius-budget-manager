@@ -1,0 +1,8 @@
+name: LOCAL
+variables:
+  - name: HOST_LANDINGS
+    value: http://localhost:8080/api
+  - name: HOST_CRM
+    value: http://localhost:3000/api
+  - name: LANDING_ID
+    value: "1"
