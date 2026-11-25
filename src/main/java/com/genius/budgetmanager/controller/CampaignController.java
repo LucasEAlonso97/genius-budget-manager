@@ -1,5 +1,10 @@
 package com.genius.budgetmanager.controller;
 
+import com.genius.budgetmanager.dto.CampaignRequest;
+import com.genius.budgetmanager.dto.CampaignResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import com.genius.budgetmanager.model.BudgetSummary;
 import com.genius.budgetmanager.model.BudgetUpdateRequest;
 import com.genius.budgetmanager.model.Campaign;
@@ -14,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/campaigns")
@@ -66,5 +72,21 @@ public class CampaignController {
     @Operation(summary = "Actualizar presupuesto de la campana")
     public ResponseEntity<Campaign> updateBudget(@PathVariable Long id, @RequestBody BudgetUpdateRequest request) {
         return ResponseEntity.ok(campaignService.updateBudget(id, request.getBudget()));
+    }
+
+    @PostMapping
+    @Operation(summary = "Crear una campaña", description = "Registra una nueva campaña con su presupuesto y gasto inicial")
+    @ApiResponse(responseCode = "201", description = "Campaña creada")
+    @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    public ResponseEntity<CampaignResponse> create(@RequestBody CampaignRequest request) {
+        CampaignResponse created = campaignService.create(request);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(created);
     }
 }
