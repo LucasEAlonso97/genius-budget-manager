@@ -8,22 +8,22 @@ public record CampaignRequest(
     @Schema(example = "66")
     Long id,
 
-    @Schema(example = "campaign 12")
+    @Schema(example = "BlackFriday2023")
     String name,
 
-    @Schema(example = "ss")
+    @Schema(example = "SuenoSimple")
     String client,
 
-    @Schema(example = "dk")
+    @Schema(example = "digital")
     String type,
 
-    @Schema(example = "ACTIVE")
+    @Schema(example = "active")
     String status,
 
-    @Schema(example = "333")
+    @Schema(example = "2000.00")
     Double budget,
 
-    @Schema(example = "3233")
+    @Schema(example = "3233.00")
     Double spent,
 
     @Schema(example = "ARS")

@@ -28,7 +28,7 @@ public class CampaignService {
 
     public List<Campaign> getCampaignsByStatus(String status) {
         return repository.findAll().stream()
-                .filter(campaign -> campaign.getType().equalsIgnoreCase(status))
+                .filter(campaign -> campaign.getStatus().equalsIgnoreCase(status))
                 .collect(Collectors.toList());
     }
 
@@ -109,8 +109,8 @@ public class CampaignService {
         String endDateStr = (request.endDate() != null) ? request.endDate().toString() : null;
 
         String statusValue = (request.status() != null && !request.status().isBlank())
-            ? request.status().trim().toUpperCase()
-            : "ACTIVE";
+            ? request.status().trim().toLowerCase()
+            : "active";
 
         Campaign newCampaign = new Campaign(
             request.id(),
