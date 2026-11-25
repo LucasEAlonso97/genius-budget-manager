@@ -1,14 +1,14 @@
 info:
-  name: POST - campaigns by status
+  name: GET- campaigns by status
   type: http
   seq: 4
 
 http:
   method: GET
-  url: "{{HOST_LANDINGS}}/campaigns?status=active"
+  url: "{{HOST_LANDINGS}}/campaigns?status=paused"
   params:
     - name: status
-      value: active
+      value: paused
       type: query
   auth: inherit
 
