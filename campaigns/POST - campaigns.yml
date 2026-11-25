@@ -11,12 +11,12 @@ http:
     data: |-
       {
         "id": 66,
-        "name": "campaign 12",
-        "client": "ss",
-        "status": "ACTIVE",
-        "type": "dk",
-        "budget":333,
-        "spent": 3233,
+        "name": "Semana Santa 2026",
+        "client": "SuenoSimple",
+        "status": "active",
+        "type": "display",
+        "budget": 150000.0,
+        "spent": 170000.0,
         "currency": "ARS",
         "startDate": "2026-11-20",
         "endDate": "2026-11-21"
