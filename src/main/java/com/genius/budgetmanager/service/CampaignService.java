@@ -4,12 +4,17 @@ import com.genius.budgetmanager.model.BudgetSummary;
 import com.genius.budgetmanager.model.Campaign;
 import com.genius.budgetmanager.model.Expense;
 import com.genius.budgetmanager.model.GlobalBudgetSummary;
+import com.genius.budgetmanager.dto.CampaignRequest;
+import com.genius.budgetmanager.dto.CampaignResponse;
 import com.genius.budgetmanager.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.math.BigDecimal;
 
 @Service
 public class CampaignService {
@@ -87,5 +92,61 @@ public class CampaignService {
         campaign.setSpent(0.0);
         campaign.setBudget(newBudget);
         return campaign;
+    }
+
+    public CampaignResponse create(CampaignRequest request) {
+        validate(request);
+
+        Double spentValue = (request.spent() != null) ? request.spent() : 0.0;
+
+        String startDateStr = request.startDate().toString();
+        String endDateStr = (request.endDate() != null) ? request.endDate().toString() : null;
+
+        String statusValue = (request.status() != null && !request.status().isBlank())
+            ? request.status().trim().toUpperCase()
+            : "ACTIVE";
+
+        Campaign newCampaign = new Campaign(
+            request.id(),
+            request.name().trim(),
+            request.client().trim(),
+            request.type().trim(),
+            request.status().trim(),
+            request.budget(),
+            spentValue,
+            request.currency().trim().toUpperCase(),
+            startDateStr,
+            endDateStr
+        );
+
+        Campaign saved = repository.save(newCampaign);
+        return CampaignResponse.fromModel(saved);
+    }
+
+    private void validate(CampaignRequest request) {
+        if (request.name() == null || request.name().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El campo 'name' es obligatorio");
+        }
+        if (request.client() == null || request.client().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El campo 'client' es obligatorio");
+        }
+        if (request.type() == null || request.type().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El campo 'type' es obligatorio");
+        }
+        if (request.budget() == null || request.budget() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El campo 'budget' debe ser mayor a cero");
+        }
+        if (request.spent() != null && request.spent() < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El campo 'spent' no puede ser negativo");
+        }
+        if (request.currency() == null || request.currency().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El campo 'currency' es obligatorio");
+        }
+        if (request.startDate() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El campo 'startDate' es obligatorio");
+        }
+        if (request.endDate() != null && request.endDate().isBefore(request.startDate())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha 'endDate' no puede ser anterior a 'startDate'");
+        }
     }
 }
