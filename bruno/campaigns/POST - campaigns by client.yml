@@ -5,10 +5,10 @@ info:
 
 http:
   method: GET
-  url: "{{HOST_LANDINGS}}/campaigns?client=TechStore"
+  url: "{{HOST_LANDINGS}}/campaigns?client=SuenoSimple"
   params:
     - name: client
-      value: TechStore
+      value: SuenoSimple
       type: query
   auth: inherit
 
