@@ -4,9 +4,11 @@ import com.genius.budgetmanager.model.BudgetSummary;
 import com.genius.budgetmanager.model.Campaign;
 import com.genius.budgetmanager.model.Expense;
 import com.genius.budgetmanager.model.GlobalBudgetSummary;
+import com.genius.budgetmanager.model.ClientSummary;
 import com.genius.budgetmanager.dto.CampaignRequest;
 import com.genius.budgetmanager.dto.CampaignResponse;
 import com.genius.budgetmanager.repository.CampaignRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,28 @@ public class CampaignService {
         return repository.findAll();
     }
 
+    public ClientSummary getSummaryByClientAndStatus(String client, String status) {
+        List<Campaign> campaigns = repository.findAll().stream()
+                .filter(campaign -> campaign.getClient().equals(client) && campaign.getStatus().equals(status))
+                .collect(Collectors.toList());
+
+        if (campaigns.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No campaigns found for client: " + client + " and status: " + status);
+        }
+
+        double totalBudget    = campaigns.stream().mapToDouble(Campaign::getBudget).sum();
+        double totalSpent     = campaigns.stream().mapToDouble(Campaign::getSpent).sum();
+        double totalAvailable = totalBudget - totalSpent;
+
+        ClientSummary clientSummary = new ClientSummary();
+        clientSummary.setClient(client);
+        clientSummary.setTotalBudget(totalBudget);
+        clientSummary.setTotalSpent(totalSpent);
+        clientSummary.setTotalAvailable(totalAvailable);
+
+        return clientSummary;
+    }
+
     public List<Campaign> getCampaignsByStatus(String status) {
         return repository.findAll().stream()
                 .filter(campaign -> campaign.getStatus().equalsIgnoreCase(status))
@@ -34,8 +58,8 @@ public class CampaignService {
 
     public List<Campaign> getCampaignsByClient(String client) {
         return repository.findAll().stream()
-            .filter(campaign -> campaign.getClient().equalsIgnoreCase(client))
-            .collect(Collectors.toList());
+                .filter(campaign -> campaign.getClient().equalsIgnoreCase(client))
+                .collect(Collectors.toList());
     }
 
     public Campaign getCampaignById(Long id) {
@@ -74,7 +98,7 @@ public class CampaignService {
 
     public GlobalBudgetSummary getGlobalBudgetSummary() {
         List<Campaign> active = repository.findAll().stream()
-                .filter(c -> "active".equalsIgnoreCase(c.getStatus()))
+                .filter(campaign -> "active".equalsIgnoreCase(campaign.getStatus()))
                 .collect(Collectors.toList());
 
         double totalBudget    = active.stream().mapToDouble(Campaign::getBudget).sum();
