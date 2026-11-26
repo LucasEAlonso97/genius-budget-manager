@@ -6,6 +6,7 @@ public class ClientSummary {
     private Double totalBudget;
     private Double totalSpent;
     private Double totalAvailable;
+    public Integer activeCampaigns;
 
     public ClientSummary() {}
 
@@ -20,4 +21,7 @@ public class ClientSummary {
 
     public Double getTotalAvailable() { return totalAvailable; }
     public void setTotalAvailable(Double totalAvailable) { this.totalAvailable = totalAvailable; }
+
+    public Integer getActiveCampaigns() { return activeCampaigns; }
+    public void setActiveCampaigns(Integer activeCampaigns) { this.activeCampaigns = activeCampaigns; }
 }

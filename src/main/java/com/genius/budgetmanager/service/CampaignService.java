@@ -46,6 +46,7 @@ public class CampaignService {
         clientSummary.setTotalBudget(totalBudget);
         clientSummary.setTotalSpent(totalSpent);
         clientSummary.setTotalAvailable(totalAvailable);
+        clientSummary.setActiveCampaigns(campaigns.size());
 
         return clientSummary;
     }
